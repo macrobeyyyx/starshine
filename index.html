@@ -1,19 +1,210 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Starshine - Yakında</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Starshine - Yıldızların Sonsuz Evreni</title>
+    <style>
+        :root {
+            --dark-blue: #000c1a;
+            --darker-blue: #00061a;
+            --star-color-1: #ffffff;
+            --star-color-2: #f0f0ff;
+            --star-color-3: #e0e0ff;
+            --text-color: #e6e6e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--dark-blue), var(--darker-blue));
+            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            perspective: 10px;
+        }
+
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: 
+                twinkle 3s infinite alternate,
+                move 120s linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes move {
+            0% { 
+                transform: translateZ(-10px) scale(2);
+            }
+            100% { 
+                transform: translateZ(10px) scale(0.5);
+            }
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            background: rgba(0,0,0,0.6);
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 20px 50px;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            color: white;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            margin-bottom: 20px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .star-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 50px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .star-card {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .star-card:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+
+        .star-card h2 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .star-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="starshine-container">
-        <div class="stars"></div>
-        <div class="content">
-            <h1>Starshine</h1>
-            <p>Yakında</p>
+    <div class="starfield" id="starfield"></div>
+    
+    <div class="content">
+        <header>
+            <h1>Starshine: Evrenin Sırları</h1>
+            <p>Milyarlarca yıldızın dans ettiği sonsuz evrende, her parlama bir hikaye, her sönen ışık bir son anlamına gelir. İşte yıldızların muhteşem yolculuğu...</p>
+        </header>
+
+        <div class="star-grid">
+            <div class="star-card">
+                <h2>Yıldızların Doğumu</h2>
+                <p>Dev gaz ve toz bulutlarından doğan yıldızlar, milyarlarca yıl boyunca parlayarak evrenin en harika oluşumlarını sergiler.</p>
+            </div>
+            <div class="star-card">
+                <h2>Yıldız Ölümleri</h2>
+                <p>Her yıldızın bir yaşam döngüsü vardır. Bazıları görkemli süpernovalarla patlar, bazıları sessizce sönüp gider.</p>
+            </div>
+            <div class="star-card">
+                <h2>Yıldız Çeşitleri</h2>
+                <p>Dev yıldızlar, cüce yıldızlar, nötron yıldızları ve kara delikler - evrenin her köşesinde farklı yıldız türleri var.</p>
+            </div>
+            <div class="star-card">
+                <h2>Galaksiler Arası Yolculuk</h2>
+                <p>Yıldızlar galaksiler arasında sonsuz bir yolculuğa çıkar, birbirlerini çekerler, ayrılırlar ve evrenin dokusunu örterler.</p>
+            </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        function createStars() {
+            const starfield = document.getElementById('starfield');
+            const starCount = 500;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random size between 1-3 pixels
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // Random position
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // Varied animation delays and durations
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                star.style.animationDuration = `${Math.random() * 4 + 2}s`;
+                
+                // Varied opacity
+                star.style.opacity = Math.random();
+                
+                starfield.appendChild(star);
+            }
+        }
+
+        // Create stars on load and on window resize
+        createStars();
+        window.addEventListener('resize', () => {
+            const starfield = document.getElementById('starfield');
+            starfield.innerHTML = ''; // Clear existing stars
+            createStars();
+        });
+    </script>
 </body>
 </html>
